@@ -10,7 +10,7 @@ exports.FindUserByToken = async (req, res) => {
     res.json({ user });
   } catch (error) {
     console.log(error);
-    res.status(400).send("Error en creacion de Usuario");
+    res.status(400).send("Error en autenticar al Usuario");
   }
 };
 
@@ -21,27 +21,27 @@ exports.AuthUser = async (req, res) => {
   }
   const { email, password } = req.body;
   try {
-    let usuario = await Usuario.findOne({ email });
-    if (!usuario) {
+    let user = await Usuario.findOne({ email });
+    if (!user) {
       return res.status(400).json({ msg: "usuario no existe" });
     }
-    const PassCorrect = await bcrypt.compare(password, usuario.password);
+    const PassCorrect = await bcrypt.compare(password, user.password);
     if (!PassCorrect) {
       return res.status(400).json({ msg: "password incorrecto" });
     }
     const payload = {
-      usuario: {
-        id: usuario.id,
+      user: {
+        id: user.id,
       },
     };
-    jwt.sign(payload, process.env.SECRETA_JWT, (error, token) => {
+    jwt.sign(payload, process.env.SECRET_KEY, (error, token) => {
       if (error) {
         throw error;
       }
-      res.send(token);
+      res.send({ token, user: payload.user });
     });
   } catch (error) {
     console.log(error);
-    res.status(400).send("Error en creacion de Usuario");
+    res.status(400).send("Error en autenticar al Usuario");
   }
 };
