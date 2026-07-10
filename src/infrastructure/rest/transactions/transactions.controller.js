@@ -14,6 +14,33 @@ exports.FindAllTransactions = async (req, res) => {
   }
 };
 
+exports.FindAllTransactionsToMonth = async (req, res) => {
+  try {
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const month = String(now.getUTCMonth() + 1).padStart(2, "0");
+
+    const transaction = await Transaction.find({
+      date: { $regex: `^${year}-${month}` },
+    });
+
+    res.json(transaction);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Error en busqueda de Transaction");
+  }
+};
+
+exports.FindAllTransactionsSaved = async (req, res) => {
+  try {
+    const transaction = await Transaction.find({ category_id: "expense-savings" });
+    res.json(transaction);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Error en busqueda de Transaction");
+  }
+};
+
 exports.FindTransactionsById = async (req, res) => {
   try {
     const transaction = await Transaction.findOne({ id: req.params.id });

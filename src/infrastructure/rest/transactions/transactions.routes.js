@@ -4,6 +4,9 @@ const auth = require('../../middleware/jwt.service')
 const router = express.Router()
 
 router.get('/', controller.FindAllTransactions)
+router.get('/month', controller.FindAllTransactionsToMonth)
+router.get('/saved', controller.FindAllTransactionsSaved)
+
 router.get('/:id', controller.FindTransactionsById)
 router.post('/', controller.CreateTransaction)
 router.put('/:id', controller.UpdateTransaction)
